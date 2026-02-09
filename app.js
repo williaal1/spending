@@ -22,7 +22,8 @@ let state = {
   category: null,
   token: null,
   submitting: false,
-  todayEntries: []
+  todayEntries: [],  // actually holds ALL entries, name kept for compat
+  walletStartDate: null
 };
 
 // ==========================================================================
@@ -165,6 +166,71 @@ function updateSubmitButton() {
   btn.disabled = !hasAmount || !hasCat || state.submitting;
 }
 
+function getWalletStartDate() {
+  // Use stored start date, or the date of the first entry, or today
+  let stored = localStorage.getItem('wallet_start_date');
+  if (stored) return stored;
+
+  if (state.todayEntries.length > 0) {
+    // Find earliest entry
+    const earliest = state.todayEntries
+      .map(e => e.timestamp.slice(0, 10))
+      .sort()[0];
+    localStorage.setItem('wallet_start_date', earliest);
+    return earliest;
+  }
+
+  const today = todayStr();
+  localStorage.setItem('wallet_start_date', today);
+  return today;
+}
+
+function daysBetween(dateStr1, dateStr2) {
+  const d1 = new Date(dateStr1 + 'T00:00:00');
+  const d2 = new Date(dateStr2 + 'T00:00:00');
+  return Math.floor((d2 - d1) / (1000 * 60 * 60 * 24));
+}
+
+function updateWalletBalance() {
+  const startDate = getWalletStartDate();
+  const today = todayStr();
+  const daysElapsed = daysBetween(startDate, today) + 1; // include today
+
+  const totalAllowance = daysElapsed * CONFIG.dailyTarget;
+
+  const totalSpent = state.todayEntries
+    .filter(e => CONFIG.discretionaryCategories.includes(e.category))
+    .reduce((sum, e) => sum + e.amount, 0);
+
+  const balance = totalAllowance - totalSpent;
+
+  const amountEl = document.getElementById('wallet-amount');
+  const recoveryEl = document.getElementById('wallet-recovery');
+
+  if (balance >= 0) {
+    amountEl.textContent = '$' + balance.toFixed(2);
+    amountEl.classList.remove('negative', 'low');
+    if (balance < CONFIG.dailyTarget) {
+      amountEl.classList.add('low');
+    }
+    recoveryEl.classList.add('hidden');
+  } else {
+    amountEl.textContent = '-$' + Math.abs(balance).toFixed(2);
+    amountEl.classList.remove('low');
+    amountEl.classList.add('negative');
+
+    // Calculate recovery date: days until balance hits 0 with $80/day added and no spending
+    const daysToRecover = Math.ceil(Math.abs(balance) / CONFIG.dailyTarget);
+    const recoveryDate = new Date();
+    recoveryDate.setDate(recoveryDate.getDate() + daysToRecover);
+    const recoveryStr = recoveryDate.toLocaleDateString('en-US', {
+      weekday: 'short', month: 'short', day: 'numeric'
+    });
+    recoveryEl.textContent = `Back positive ${recoveryStr} (${daysToRecover}d)`;
+    recoveryEl.classList.remove('hidden');
+  }
+}
+
 function updateDailyStatus() {
   const today = todayStr();
   const todayDiscretionary = state.todayEntries
@@ -179,6 +245,8 @@ function updateDailyStatus() {
   } else if (todayDiscretionary > CONFIG.dailyTarget * 0.75) {
     totalEl.classList.add('warning');
   }
+
+  updateWalletBalance();
 }
 
 function renderEntries() {
@@ -369,6 +437,15 @@ function initTokenSetup() {
       document.getElementById('app').classList.add('hidden');
       document.getElementById('setup-modal').classList.remove('hidden');
       document.getElementById('token-input').value = '';
+    }
+  });
+
+  document.getElementById('reset-wallet').addEventListener('click', () => {
+    const newDate = prompt('Wallet start date (YYYY-MM-DD):', todayStr());
+    if (newDate && /^\d{4}-\d{2}-\d{2}$/.test(newDate)) {
+      localStorage.setItem('wallet_start_date', newDate);
+      state.walletStartDate = newDate;
+      updateWalletBalance();
     }
   });
 }

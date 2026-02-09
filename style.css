@@ -126,8 +126,48 @@ body {
   padding: 12px 0 8px;
 }
 
+/* Wallet Balance */
+#wallet-balance {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+}
+
+#wallet-amount {
+  font-size: 36px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--green);
+}
+
+#wallet-amount.negative { color: var(--red); }
+#wallet-amount.low { color: var(--orange); }
+
+#wallet-label {
+  font-size: 16px;
+  color: var(--text-dim);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#wallet-recovery {
+  font-size: 13px;
+  color: var(--red);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+#wallet-divider {
+  width: 40px;
+  height: 1px;
+  background: var(--border);
+  margin: 10px auto;
+}
+
 #daily-status {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
@@ -135,7 +175,7 @@ body {
 #daily-total { color: var(--green); }
 #daily-total.over { color: var(--red); }
 #daily-total.warning { color: var(--orange); }
-#daily-target { color: var(--text-dim); font-weight: 400; font-size: 20px; }
+#daily-target { color: var(--text-dim); font-weight: 400; font-size: 15px; }
 
 #date-display {
   font-size: 13px;

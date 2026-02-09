@@ -23,11 +23,17 @@
 
   <!-- Main App -->
   <div id="app" class="hidden">
-    <!-- Header: daily target -->
+    <!-- Header: wallet balance + daily target -->
     <div id="header">
+      <div id="wallet-balance">
+        <span id="wallet-amount">$0.00</span>
+        <span id="wallet-label">wallet</span>
+      </div>
+      <div id="wallet-recovery" class="hidden"></div>
+      <div id="wallet-divider"></div>
       <div id="daily-status">
         <span id="daily-total">$0.00</span>
-        <span id="daily-target">/ $80.00</span>
+        <span id="daily-target">/ $80.00 today</span>
       </div>
       <div id="date-display"></div>
     </div>
@@ -90,6 +96,7 @@
 
     <!-- Settings link -->
     <div id="footer">
+      <button id="reset-wallet" class="link-btn">Reset wallet start date</button>
       <button id="reset-token" class="link-btn">Reset token</button>
     </div>
   </div>
