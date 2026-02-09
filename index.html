@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Spend">
+  <title>Spend</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Token Setup Modal -->
+  <div id="setup-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Setup</h2>
+      <p>Paste your GitHub personal access token. This is stored only in your browser and never leaves your device.</p>
+      <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off">
+      <button id="save-token" class="btn-primary">Save</button>
+      <p class="hint">Generate at: GitHub &gt; Settings &gt; Developer Settings &gt; Fine-grained tokens<br>Scope: repo contents (read/write) for williaal1/claude-projects</p>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" class="hidden">
+    <!-- Header: daily target -->
+    <div id="header">
+      <div id="daily-status">
+        <span id="daily-total">$0.00</span>
+        <span id="daily-target">/ $80.00</span>
+      </div>
+      <div id="date-display"></div>
+    </div>
+
+    <!-- Amount Input -->
+    <div id="amount-section">
+      <div id="amount-display">$0.00</div>
+      <div id="numpad">
+        <button class="num" data-val="1">1</button>
+        <button class="num" data-val="2">2</button>
+        <button class="num" data-val="3">3</button>
+        <button class="num" data-val="4">4</button>
+        <button class="num" data-val="5">5</button>
+        <button class="num" data-val="6">6</button>
+        <button class="num" data-val="7">7</button>
+        <button class="num" data-val="8">8</button>
+        <button class="num" data-val="9">9</button>
+        <button class="num" data-val=".">.</button>
+        <button class="num" data-val="0">0</button>
+        <button class="num del" data-val="del">&larr;</button>
+      </div>
+    </div>
+
+    <!-- Category Grid -->
+    <div id="category-section">
+      <div id="category-grid">
+        <button class="cat" data-cat="GROCERIES">Groceries</button>
+        <button class="cat" data-cat="RESTAURANTS">Restaurants</button>
+        <button class="cat" data-cat="SHOPPING">Shopping</button>
+        <button class="cat" data-cat="BOOKS_RECORDS">Books/Records</button>
+        <button class="cat" data-cat="TRAVEL">Travel</button>
+        <button class="cat" data-cat="STIPEND">Stipend</button>
+        <button class="cat" data-cat="BILLS">Bills</button>
+        <button class="cat" data-cat="HOUSING">Housing</button>
+        <button class="cat" data-cat="DEBT">Debt</button>
+        <button class="cat" data-cat="INFRASTRUCTURE">Infra</button>
+        <button class="cat" data-cat="INCOME">Income</button>
+        <button class="cat" data-cat="FEES">Fees</button>
+      </div>
+    </div>
+
+    <!-- Note Field -->
+    <div id="note-section">
+      <input type="text" id="note-input" placeholder="Note (optional)" autocomplete="off">
+    </div>
+
+    <!-- Submit -->
+    <button id="submit-btn" class="btn-primary" disabled>Log</button>
+
+    <!-- Status Message -->
+    <div id="status-msg" class="hidden"></div>
+
+    <!-- Today's Entries -->
+    <div id="entries-section">
+      <h3>Today</h3>
+      <div id="entries-list">
+        <p class="empty-state">Loading...</p>
+      </div>
+    </div>
+
+    <!-- Settings link -->
+    <div id="footer">
+      <button id="reset-token" class="link-btn">Reset token</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
